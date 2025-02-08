@@ -23,7 +23,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
 
-	apiv1 "github.com/cloudnative-pg/cloudnative-pg/api/v1"
 	"github.com/cloudnative-pg/cloudnative-pg/pkg/utils"
 	"github.com/cloudnative-pg/cloudnative-pg/tests"
 	testsUtils "github.com/cloudnative-pg/cloudnative-pg/tests/utils"
@@ -137,7 +136,7 @@ var _ = Describe("PVC Deletion", Label(tests.LabelSelfHealing), func() {
 
 			// removing WalStorage PVC if needed
 			if walStorageEnabled {
-				walPvcName := fmt.Sprintf("%v%s", pvcName, apiv1.DataVolumeSuffix)
+				walPvcName := fmt.Sprintf("%v%s", pvcName, testDataVolumeSuffix)
 				namespacedWalPVCName := types.NamespacedName{
 					Namespace: namespace,
 					Name:      walPvcName,
