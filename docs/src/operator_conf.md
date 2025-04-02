@@ -13,41 +13,43 @@ By default, the operator is installed in the `cnpg-system`
 namespace as a Kubernetes `Deployment` called `cnpg-controller-manager`.
 
 !!! Note
-    In the examples below we assume the default name and namespace for the operator deployment.
+In the examples below we assume the default name and namespace for the operator deployment.
 
 The behavior of the operator can be customized through a `ConfigMap`/`Secret` that
 is located in the same namespace of the operator deployment and with
 `cnpg-controller-manager-config` as the name.
 
 !!! Important
-    Any change to the config's `ConfigMap`/`Secret` will not be automatically
-    detected by the operator, - and as such, it needs to be reloaded (see below).
-    Moreover, changes only apply to the resources created after the configuration
-    is reloaded.
+Any change to the config's `ConfigMap`/`Secret` will not be automatically
+detected by the operator, - and as such, it needs to be reloaded (see below).
+Moreover, changes only apply to the resources created after the configuration
+is reloaded.
 
 !!! Important
-    The operator first processes the ConfigMap values and then the Secret’s, in this order.
-    As a result, if a parameter is defined in both places, the one in the Secret will be used.
+The operator first processes the ConfigMap values and then the Secret’s, in this order.
+As a result, if a parameter is defined in both places, the one in the Secret will be used.
 
 ## Available options
 
 The operator looks for the following environment variables to be defined in the `ConfigMap`/`Secret`:
 
-Name | Description
----- | -----------
-`CERTIFICATE_DURATION` | Determines the lifetime of the generated certificates in days. Default is 90.
-`CLUSTERS_ROLLOUT_DELAY` | The duration (in seconds) to wait between the roll-outs of different clusters during an operator upgrade. This setting controls the timing of upgrades across clusters, spreading them out to reduce system impact. The default value is `0` which means no delay between PostgreSQL cluster upgrades.
-`CREATE_ANY_SERVICE` | When set to `true`, will create `-any` service for the cluster. Default is `false`
-`ENABLE_AZURE_PVC_UPDATES` | Enables to delete Postgres pod if its PVC is stuck in Resizing condition. This feature is mainly for the Azure environment (default `false`)
-`ENABLE_INSTANCE_MANAGER_INPLACE_UPDATES` | When set to `true`, enables in-place updates of the instance manager after an update of the operator, avoiding rolling updates of the cluster (default `false`)
-`EXPIRING_CHECK_THRESHOLD` | Determines the threshold, in days, for identifying a certificate as expiring. Default is 7. 
-`INCLUDE_PLUGINS` | A comma-separated list of plugins to be always included in the Cluster's reconciliation.
-`INHERITED_ANNOTATIONS` | List of annotation names that, when defined in a `Cluster` metadata, will be inherited by all the generated resources, including pods
-`INHERITED_LABELS` | List of label names that, when defined in a `Cluster` metadata, will be inherited by all the generated resources, including pods
-`INSTANCES_ROLLOUT_DELAY` | The duration (in seconds) to wait between roll-outs of individual PostgreSQL instances within the same cluster during an operator upgrade. The default value is `0`, meaning no delay between upgrades of instances in the same PostgreSQL cluster.
-`MONITORING_QUERIES_CONFIGMAP` | The name of a ConfigMap in the operator's namespace with a set of default queries (to be specified under the key `queries`) to be applied to all created Clusters
-`MONITORING_QUERIES_SECRET` | The name of a Secret in the operator's namespace with a set of default queries (to be specified under the key `queries`) to be applied to all created Clusters
-`PULL_SECRET_NAME` | Name of an additional pull secret to be defined in the operator's namespace and to be used to download images
+| Name                                      | Description                                                                                                                                                                                                                                                                                            |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CERTIFICATE_DURATION`                    | Determines the lifetime of the generated certificates in days. Default is 90.                                                                                                                                                                                                                          |
+| `CLUSTERS_ROLLOUT_DELAY`                  | The duration (in seconds) to wait between the roll-outs of different clusters during an operator upgrade. This setting controls the timing of upgrades across clusters, spreading them out to reduce system impact. The default value is `0` which means no delay between PostgreSQL cluster upgrades. |
+| `CREATE_ANY_SERVICE`                      | When set to `true`, will create `-any` service for the cluster. Default is `false`.                                                                                                                                                                                                                    |
+| `DATA_VOLUME_SUFFIX`                      | When set, the PersistentVolumeClaim for data volumes will be named according to the pod name suffix'ed with this value.                                                                                                                                                                                |
+| `ENABLE_AZURE_PVC_UPDATES`                | Enables to delete Postgres pod if its PVC is stuck in Resizing condition. This feature is mainly for the Azure environment (default `false`).                                                                                                                                                          |
+| `ENABLE_INSTANCE_MANAGER_INPLACE_UPDATES` | When set to `true`, enables in-place updates of the instance manager after an update of the operator, avoiding rolling updates of the cluster (default `false`).                                                                                                                                       |
+| `EXPIRING_CHECK_THRESHOLD`                | Determines the threshold, in days, for identifying a certificate as expiring. Default is 7.                                                                                                                                                                                                            |
+| `INCLUDE_PLUGINS`                         | A comma-separated list of plugins to be always included in the Cluster's reconciliation.                                                                                                                                                                                                               |
+| `INHERITED_ANNOTATIONS`                   | List of annotation names that, when defined in a `Cluster` metadata, will be inherited by all the generated resources, including pods.                                                                                                                                                                 |
+| `INHERITED_LABELS`                        | List of label names that, when defined in a `Cluster` metadata, will be inherited by all the generated resources, including pods.                                                                                                                                                                      |
+| `INSTANCES_ROLLOUT_DELAY`                 | The duration (in seconds) to wait between roll-outs of individual PostgreSQL instances within the same cluster during an operator upgrade. The default value is `0`, meaning no delay between upgrades of instances in the same PostgreSQL cluster.                                                    |
+| `MONITORING_QUERIES_CONFIGMAP`            | The name of a ConfigMap in the operator's namespace with a set of default queries (to be specified under the key `queries`) to be applied to all created Clusters.                                                                                                                                     |
+| `MONITORING_QUERIES_SECRET`               | The name of a Secret in the operator's namespace with a set of default queries (to be specified under the key `queries`) to be applied to all created Clusters.                                                                                                                                        |
+| `PULL_SECRET_NAME`                        | Name of an additional pull secret to be defined in the operator's namespace and to be used to download images.                                                                                                                                                                                         |
+| `WAL_VOLUME_SUFFIX`                       | When set, the PersistentVolmeClaim for WAL volumes will be named according to the pod name suffix'ed with this value.                                                                                                                                                                                  |
 
 Values in `INHERITED_ANNOTATIONS` and `INHERITED_LABELS` support path-like wildcards. For example, the value `example.com/*` will match
 both the value `example.com/one` and `example.com/two`.
@@ -128,8 +130,8 @@ kubectl delete pods -n [NAMESPACE_NAME_HERE] \
 ```
 
 !!! Warning
-    Customizations will be applied only to `Cluster` resources created
-    after the reload of the operator deployment.
+Customizations will be applied only to `Cluster` resources created
+after the reload of the operator deployment.
 
 Following the above example, if the `Cluster` definition contains a `categories`
 annotation and any of the `environment`, `workload`, or `app` labels, these will
@@ -143,7 +145,7 @@ The operator can expose a PPROF HTTP server with the following endpoints on `loc
 - `/debug/pprof/cmdline`. Responds with the running program's command line, with arguments separated by NULL bytes.
 - `/debug/pprof/profile`. Responds with the pprof-formatted cpu profile. Profiling lasts for duration specified in seconds GET parameter, or for 30 seconds if not specified.
 - `/debug/pprof/symbol`. Looks up the program counters listed in the request, responding with a table mapping program counters to function names.
-- `/debug/pprof/trace`. Responds with the execution trace in binary form.  Tracing lasts for duration specified in seconds GET parameter, or for 1 second if not specified.
+- `/debug/pprof/trace`. Responds with the execution trace in binary form. Tracing lasts for duration specified in seconds GET parameter, or for 1 second if not specified.
 
 To enable the operator you need to edit the operator deployment add the flag `--pprof-server=true`.
 
@@ -157,16 +159,16 @@ Then on the edit page scroll down the container args and add
 `--pprof-server=true`, as in this example:
 
 ```yaml
-      containers:
-      - args:
-        - controller
-        - --enable-leader-election
-        - --config-map-name=cnpg-controller-manager-config
-        - --secret-name=cnpg-controller-manager-config
-        - --log-level=info
-        - --pprof-server=true # relevant line
-        command:
-        - /manager
+containers:
+  - args:
+      - controller
+      - --enable-leader-election
+      - --config-map-name=cnpg-controller-manager-config
+      - --secret-name=cnpg-controller-manager-config
+      - --log-level=info
+      - --pprof-server=true # relevant line
+    command:
+      - /manager
 ```
 
 Save the changes; the deployment now will execute a roll-out, and the new pod
